@@ -21,7 +21,7 @@ module.exports = {
         }
         /* verifica se esse número já existe */
         const roomsExistIds = await db.all(`SELECT id FROM rooms`)
-        isRoom = roomsExistIds.some(roomExistId => roomExistId === roomId)
+        isRoom = roomsExistIds.some(roomExistId => roomExistId.id === parseInt(roomId))
 
         console.log(roomsExistIds)
         console.log(isRoom)
@@ -80,15 +80,20 @@ module.exports = {
 
     /* verificar se a sala existe | FORM ENTRAR SALA */
     const roomsExistIds = await db.all(`SELECT id FROM rooms`)
-    const isRoom = roomsExistIds.some(roomExistId => roomExistId === roomId)
+    const isRoom = roomsExistIds.some(roomExistId => roomExistId.id === parseInt(roomId))
 
-    console.log(roomId)
+    console.log(parseInt(roomId))
     console.log(roomsExistIds)
     console.log(isRoom)
 
     if (roomId == 0 || roomId == '') {
       res.render('parts/404-sala')
-    } else {
+    } 
+    else if (!isRoom) {
+      db.close
+      res.render('parts/404-sala')
+    } 
+    else {
       db.close()
       res.redirect(`/room/${roomId}`)
     }
